@@ -30,6 +30,12 @@
     </select>
     <button id="searchFlights" style="padding: 12px 30px; font-size: 18px; background-color: gold; color: #0a0a0a; border: none; border-radius: 10px;">Search</button>
   </div>
+<div style="margin-top: 40px; text-align: center; color: black;">
+  <h3 style="font-size: 24px; margin-bottom: 10px;">Track Your Flight</h3>
+  <input type="text" id="trackingNumber" placeholder="Enter Tracking Number" style="padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; width: 250px;">
+  <button onclick="trackFlight()" style="margin-left: 10px; padding: 10px 20px; font-size: 16px; background-color: gold; color: #000; border: none; border-radius: 8px;">Track</button>
+  <p id="trackingResult" style="margin-top: 20px; font-size: 18px;"></p>
+</div>
 </section>
 
 
@@ -230,6 +236,25 @@ document.getElementById('confirmSeat').onclick = function () {
   document.getElementById('confirmedSeat').textContent = selectedSeat.toUpperCase();
   document.getElementById('checkoutScreen').scrollIntoView({ behavior: 'smooth' });
 };
+function trackFlight() {
+  const trackingNumber = document.getElementById('trackingNumber').value.trim();
+  const resultElement = document.getElementById('trackingResult');
+
+  // Example hardcoded tracking numbers (replace with real backend or database later)
+  const trackingDatabase = {
+    "ORE123": "Flight TKO-117 | Seat W8 | Status: Confirmed",
+    "ORE456": "Flight ZRO-501 | Seat M10 | Status: Checked-in",
+    "ORE789": "Flight TKO-117 | Seat HW9 | Status: Pending"
+  };
+
+  if (trackingNumber && trackingDatabase[trackingNumber]) {
+    resultElement.textContent = trackingDatabase[trackingNumber];
+    resultElement.style.color = "green";
+  } else {
+    resultElement.textContent = "Tracking number not found. Please check and try again.";
+    resultElement.style.color = "red";
+  }
+}
 </script>
 
 </body>
