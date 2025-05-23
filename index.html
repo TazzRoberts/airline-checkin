@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +49,225 @@ label {
 </style>
 </head>
 <body>
-<!-- Omitted for brevity, but would contain the rest of your HTML from the script section and beyond -->
+
+<section style="background-image: url('https://example.com/luxury-airport-banner.jpg'); background-size: cover; text-align: center; padding: 100px 20px; color: white;">
+  <h1 style="font-size: 60px; margin-bottom: 20px; letter-spacing: 2px;">Welcome Aboard Oreliane Airlines</h1>
+  <p style="font-size: 24px; margin-bottom: 40px; font-style: italic;">Exclusivity. Altitude. Style.</p>
+  <!-- Begin Check-In button removed -->
+</section>
+
+<section style="margin-top: 300px; padding: 60px 20px; max-width: 800px; margin-left: auto; margin-right: auto; background-color: rgba(255, 255, 255, 0.3); color: white; border-radius: 12px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 2px solid white;">
+
+  <h2 style="text-align: center; font-size: 36px;">Choose Your Aircraft</h2>
+  <div style="display: flex; gap: 40px; justify-content: center; margin-bottom: 40px;">
+    <select id="planeDropdown" style="padding: 12px; font-size: 18px; border: 1px solid gold; border-radius: 8px; background: #fff; color: #000;">
+      <option value="">Select Aircraft</option>
+      <option value="TKO">TKO - Elite Class</option>
+      <option value="ZRO">ZRO - Zero Gravity</option>
+    </select>
+    <button id="searchFlights" style="padding: 12px 30px; font-size: 18px; background-color: gold; color: #0a0a0a; border: none; border-radius: 10px;">Search</button>
+  </div>
+</section>
+
+
+  <div id="shoeRepeater" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;"></div>
+</section>
+
+<section id="seatSelection" style="display: none; padding: 60px 20px; background-color: #fffaf0; font-family: 'Georgia', serif; text-align: center;">
+  <h2 style="font-size: 36px; margin-bottom: 30px;">Select Your Seat</h2>
+  <p style="font-size: 18px; margin-bottom: 10px;">Choose a seat according to your comfortable to fit </p>
+  <button onclick="document.getElementById('searchFlights').click()" style="margin-bottom: 30px; background: transparent; border: none; color: #0077cc; font-size: 16px; text-decoration: underline; cursor: pointer;">Change Flight</button>
+  <div style="display: flex; justify-content: center; gap: 100px;">
+    <div>
+      <h3>Women</h3>
+      <div id="womenSeats"></div>
+    </div>
+    <div>
+      <h3>Men</h3>
+      <div id="menSeats"></div>
+    </div>
+  </div>
+  <button id="confirmSeat" style="margin-top: 40px; padding: 15px 50px; font-size: 20px; background-color: gold; color: #0a0a0a; border: none; border-radius: 12px; display: none;">Confirm Seat</button>
+</section>
+
+<section id="checkoutScreen" style="display: none; padding: 80px 20px; background-color: #fff; text-align: center; border: 2px dashed gold; margin: 30px auto; width: 90%; max-width: 600px; border-radius: 16px; font-family: 'Georgia', serif;">
+  <h2 style="font-size: 32px; color: #0a0a0a; margin-bottom: 10px;">Final Check-In</h2>
+  <h3 style="font-size: 22px; margin-bottom: 20px; color: #555;">Digital Boarding Pass</h3>
+  <p style="font-size: 20px; color: #333; margin-bottom: 10px;">Passenger: Valued Customer</p>
+  <p style="font-size: 18px; color: #333;">Flight: <span id="confirmedFlightNumber">Confirmed</span></p>
+  <p style="font-size: 18px; color: #333;">Seat: <span id="confirmedSeat">Selected</span></p>
+
+  <h4 style="margin-top: 30px; color: #222; text-align: left;">Passenger Information</h4>
+  <div style="text-align: left; margin-top: 15px;">
+    <label for="passengerName">Full Name</label>
+    <input type="text" id="passengerName" placeholder="John Doe" />
+
+    <label for="passengerEmail">Email</label>
+    <input type="email" id="passengerEmail" placeholder="john@example.com" />
+
+    <label for="passengerContact">Contact Number</label>
+    <input type="tel" id="passengerContact" placeholder="+1 (555) 123-4567" />
+
+    <label for="passengerAddress">Address</label>
+    <input type="text" id="passengerAddress" placeholder="123 Luxury St, City, Country" />
+  </div>
+
+  <h4 style="margin-top: 30px; color: #222; text-align: left;">Payment Information</h4>
+  <div style="text-align: left; margin-top: 15px;">
+    <input type="text" placeholder="Cardholder Name" />
+    <input type="text" placeholder="Card Number" />
+    <input type="text" placeholder="Expiration Date (MM/YY)" />
+    <input type="text" placeholder="CVV" />
+  </div>
+
+  <button style="margin-top: 30px; padding: 15px 40px; font-size: 18px; background-color: #0a0a0a; color: gold; border: 2px solid gold; border-radius: 10px;">Complete Check-In</button>
+  <p style="font-size: 16px; color: #888; margin-top: 20px;">You will receive an email confirmation shortly.</p>
+</section>
+
+<script>
+const shoeDatabase = {
+  TKO: [{ title: "TKO-117", price: 249, image: "https://example.com/tko1.jpg", slug: "tko-prestige", flight: "TKO-117" }],
+  ZRO: [{ title: "ZRO-501", price: 249, image: "https://example.com/zro1.jpg", slug: "zro-elevate", flight: "ZRO-501" }]
+};
+
+let selectedSeat = null;
+let selectedFlight = null;
+
+function renderSeats() {
+  const womenContainer = document.getElementById('womenSeats');
+  const menContainer = document.getElementById('menSeats');
+
+  womenContainer.innerHTML = '';
+  menContainer.innerHTML = '';
+
+  const createColumn = () => {
+    const col = document.createElement('div');
+    col.style.display = 'grid';
+    col.style.gridTemplateColumns = 'repeat(2, 60px)';
+    col.style.gap = '20px';
+    return col;
+  };
+
+  const leftCol = createColumn();       // Women seats
+  const rightCol = createColumn();      // Men seats
+  const midColHW = createColumn();      // Half-size Women
+  const midColHM = createColumn();      // Half-size Men
+
+  for (let i = 7; i <= 12; i++) {
+    // Women seat
+    const wBtn = document.createElement('button');
+    wBtn.className = 'seat';
+    wBtn.id = `seat-w-${i}`;
+    wBtn.textContent = `W${i}`;
+    leftCol.appendChild(wBtn);
+
+    // Men seat
+    const mBtn = document.createElement('button');
+    mBtn.className = 'seat';
+    mBtn.id = `seat-m-${i}`;
+    mBtn.textContent = `M${i}`;
+    rightCol.appendChild(mBtn);
+
+    // Half-size women
+    const hwBtn = document.createElement('button');
+    hwBtn.className = 'seat';
+    hwBtn.id = `seat-hw-${i}`;
+    hwBtn.textContent = `HW${i}`;
+    midColHW.appendChild(hwBtn);
+
+    // Half-size men
+    const hmBtn = document.createElement('button');
+    hmBtn.className = 'seat';
+    hmBtn.id = `seat-hm-${i}`;
+    hmBtn.textContent = `HM${i}`;
+    midColHM.appendChild(hmBtn);
+  }
+
+  // Add to Women container
+  womenContainer.appendChild(leftCol);
+  const midBlockWomen = document.createElement('div');
+  midBlockWomen.style.marginTop = '20px';
+  midBlockWomen.innerHTML = `<h4 style="text-align:center; margin-bottom: 10px;">Half Sizes (Women)</h4>`;
+  midBlockWomen.appendChild(midColHW);
+  womenContainer.appendChild(midBlockWomen);
+
+  // Add to Men container
+  menContainer.appendChild(rightCol);
+  const midBlockMen = document.createElement('div');
+  midBlockMen.style.marginTop = '20px';
+  midBlockMen.innerHTML = `<h4 style="text-align:center; margin-bottom: 10px;">Half Sizes (Men)</h4>`;
+  midBlockMen.appendChild(midColHM);
+  menContainer.appendChild(midBlockMen);
+}
+
+function activateSeatSelection() {
+  document.querySelectorAll('.seat').forEach(button => {
+    button.onclick = () => {
+      document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+      button.classList.add('selected');
+      selectedSeat = button.id;
+      document.getElementById('confirmSeat').style.display = 'inline-block';
+    };
+  });
+}
+
+document.getElementById('searchFlights').onclick = function () {
+  const plane = document.getElementById('planeDropdown').value;
+  const repeater = document.getElementById('shoeRepeater');
+  repeater.style.display = 'grid';
+  repeater.innerHTML = '';
+  document.getElementById('seatSelection').style.display = 'none';
+  document.getElementById('checkoutScreen').style.display = 'none';
+  selectedFlight = null;
+  selectedSeat = null;
+
+  if (plane && shoeDatabase[plane]) {
+    const header = document.createElement('h2');
+    header.innerText = 'Arrival Flights';
+    header.style.textAlign = 'center';
+    header.style.fontSize = '32px';
+    header.style.marginBottom = '30px';
+    header.style.color = 'white';
+    repeater.appendChild(header);
+
+    const item = shoeDatabase[plane][0];
+    const card = document.createElement('div');
+    card.style.background = '#fff';
+    card.style.padding = '30px';
+    card.style.borderRadius = '12px';
+    card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+    card.innerHTML = `
+      <img src="${item.image}" alt="${item.title}" style="width: 100%; border-radius: 10px; margin-bottom: 20px;">
+      <h3 style="font-size: 24px; margin-bottom: 10px;">${item.title}</h3>
+      <p style="font-size: 20px; color: #444;">$${item.price}</p>
+      <button class="bookFlightBtn" style="margin-top: 15px; padding: 10px 25px; font-size: 16px; background-color: gold; color: #0a0a0a; border: none; border-radius: 8px;">Book Flight</button>
+    `;
+    repeater.appendChild(card);
+
+    setTimeout(() => {
+      document.querySelector('.bookFlightBtn').onclick = function () {
+        selectedFlight = item.flight;
+        selectedSeat = null;
+        document.getElementById('seatSelection').style.display = 'block';
+        repeater.style.display = 'none';
+        document.getElementById('confirmSeat').style.display = 'none';
+        renderSeats();
+        activateSeatSelection();
+        document.getElementById('seatSelection').scrollIntoView({ behavior: 'smooth' });
+      };
+    }, 100);
+  }
+};
+
+document.getElementById('confirmSeat').onclick = function () {
+  if (!selectedSeat) return alert('Please select a seat first!');
+  document.getElementById('seatSelection').style.display = 'none';
+  document.getElementById('checkoutScreen').style.display = 'block';
+  document.getElementById('confirmedFlightNumber').textContent = selectedFlight || 'N/A';
+  document.getElementById('confirmedSeat').textContent = selectedSeat.toUpperCase();
+  document.getElementById('checkoutScreen').scrollIntoView({ behavior: 'smooth' });
+};
+</script>
+
 </body>
 </html>
